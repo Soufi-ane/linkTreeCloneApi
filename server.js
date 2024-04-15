@@ -1,5 +1,5 @@
 import express from "express";
-const app = express();
+export const app = express();
 import { getAllUsers, getUser, createUser, getLinkTree, addLink } from "./database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
