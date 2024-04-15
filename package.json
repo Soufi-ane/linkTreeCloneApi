@@ -5,7 +5,8 @@
     "main": "server.js",
     "type": "module",
     "scripts": {
-        "debug": "ndb server.js"
+        "debug": "ndb server.js",
+        "start": "node server.js"
     },
     "keywords": [],
     "author": "soufiane",
