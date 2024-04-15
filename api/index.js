@@ -1,9 +1,8 @@
 import express from "express";
-import serverless from "serverless-http";
-const app = express();
-export const serverlessApp = serverless(app);
 
-import { getAllUsers, getUser, createUser, getLinkTree, addLink } from "../database.js";
+export const app = express();
+
+import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser } from "../database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -18,17 +17,12 @@ app.get("/users", async (req, res) => {
         users,
     });
 });
-app.get("/users/:ID", async (req, res) => {
-    const { ID } = req.params;
-    const user = await getUser(ID);
-    res.json(user);
-});
 
 app.post("/singup", async (req, res) => {
-    const { name, username, age, email, password } = req.body;
+    const { name, username, password, bio } = req.body;
     const salt = await bcrypt.genSalt(14);
     const hashedPass = await bcrypt.hash(password, salt);
-    const [err, id] = await createUser({ name, username, age, email, password: hashedPass });
+    const [err, id] = await createUser({ name, username, password: hashedPass, bio });
 
     if (!err) {
         const token = await jwt.sign({ id }, process.env.SECRET);
@@ -55,12 +49,12 @@ app.get("/:username", async (req, res) => {
     });
 });
 app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    const [user, page, links] = await getUser({ email, password });
+    const { username, password } = req.body;
+    const [user, page, links] = await getUser(username);
     if (!user || !(await bcrypt.compare(password, user.password)))
         return res.json({
             status: "fail",
-            message: "Email or password incorrect !",
+            message: "Username or password incorrect !",
         });
     const token = await jwt.sign({ id: user.id }, process.env.SECRET);
     res.json({
@@ -71,9 +65,7 @@ app.post("/login", async (req, res) => {
                 id: user.id,
                 name: user.name,
                 username: user.username,
-                picture: user.image,
-                email: user.email,
-                age: user.age,
+                bio: user.bio,
             },
             page,
             links,
@@ -83,8 +75,8 @@ app.post("/login", async (req, res) => {
 
 app.post("/addLink/:userId", checkUser, async (req, res) => {
     const { userId } = req.params;
-    const { url, bg_color, icon, radius } = req.body;
-    const err = await addLink({ userId, url, bg_color, icon, radius });
+    const { url, bg_color, radius } = req.body;
+    const err = await addLink({ userId, url, bg_color, radius });
     if (!err) res.status(201).end();
     else {
         res.json({
@@ -94,9 +86,55 @@ app.post("/addLink/:userId", checkUser, async (req, res) => {
     }
 });
 
-app.patch("/editPage/:userId", checkUser, async (req, res) => {
+app.delete("/deleteLink/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
+    const { linkId } = req.body;
+    const err = await deleteLink({ userId, linkId });
+    if (!err) {
+        return res.status(204).end();
+    } else {
+        return next(err);
+    }
 });
+app.delete("/deleteAccount/:userId", checkUser, async (req, res, next) => {
+    const { userId } = req.params;
+    const err = await deleteUser(userId);
+    if (!err) {
+        return res.status(204).end();
+    } else {
+        return next(err.message);
+    }
+});
+
+app.patch("/editPage/:userId", checkUser, async (req, res, next) => {
+    const { userId } = req.params;
+    const { font, background } = req.body;
+    const err = await editPage({ userId, font, background });
+    if (!err) {
+        res.status(201).end();
+    } else return next(err);
+});
+app.patch("/changeDetails/:userId/:field", checkUser, async (req, res, next) => {
+    const { userId, field } = req.params;
+    const { newValue } = req.body;
+    let value = newValue;
+    if (field == "password") {
+        const salt = await bcrypt.genSalt(14);
+        value = await bcrypt.hash(newValue, salt);
+    }
+
+    const err = await changeUserDetails({ field, userId, value });
+    if (!err) {
+        return res.status(204).end();
+    } else {
+        next(err);
+    }
+});
+
+// app.get("/addCol/now", async (req, res) => {
+//     await addCol();
+//     res.end();
+// });
 
 app.delete("/users/:ID", (req, res) => {
     const { ID } = req.params;
@@ -105,13 +143,14 @@ app.delete("/users/:ID", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    res.json({
+    res.status(400).json({
         status: "fail",
         message: err,
     });
 });
 
-const port = process.env.PORT;
+const port = 8000;
+// const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`app listening on port ${port}`);
 });

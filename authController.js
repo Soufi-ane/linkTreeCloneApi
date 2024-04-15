@@ -4,14 +4,13 @@ import { findUser } from "./database.js";
 export async function checkUser(req, res, next) {
     const { authorization } = req.headers;
     if (!authorization) {
-        res.json({
-            status: "fail",
-            message: "user is not authorized , please log in",
-        });
+        next("user is not authorized , please log in");
     }
     try {
         const encoded = await promisify(jwt.verify)(authorization, process.env.SECRET);
-        const user = findUser(req.params?.userId);
+
+        const user = await findUser(encoded.id);
+
         if (!user) throw new Error("User not found , please sign up");
     } catch (err) {
         next(err.message);
