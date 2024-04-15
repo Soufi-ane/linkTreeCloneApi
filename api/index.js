@@ -131,6 +131,12 @@ app.patch("/changeDetails/:userId/:field", checkUser, async (req, res, next) => 
     }
 });
 
+app.get("/isLogedIn", checkUser, async (req, res) => {
+    res.json({
+        logedIn: true,
+    });
+});
+
 // app.get("/addCol/now", async (req, res) => {
 //     await addCol();
 //     res.end();
