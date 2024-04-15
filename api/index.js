@@ -1,5 +1,8 @@
 import express from "express";
-export const app = express();
+import serverless from "serverless-http";
+const app = express();
+export const serverlessApp = serverless(app);
+
 import { getAllUsers, getUser, createUser, getLinkTree, addLink } from "../database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
