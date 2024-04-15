@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "debug": "ndb server.js",
-        "start": "node server.js"
+        "start": "node ./api/index.js"
     },
     "keywords": [],
     "author": "soufiane",
