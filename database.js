@@ -1,22 +1,15 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
 dotenv.config();
+
 const pool = mysql
     .createPool({
-        host: "bvmp5ufaxr51ifcdzced-mysql.services.clever-cloud.com",
-        user: "urat7el98boj2sca",
-        password: "6Mg63aj4XAVPNTYoN3nO",
-        database: "bvmp5ufaxr51ifcdzced",
+        host: process.env.DATABASE_HOST,
+        user: process.env.DATABASE_USER,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE,
     })
     .promise();
-// const pool = mysql
-//     .createPool({
-//         host: process.env.DATABASE_HOST,
-//         user: process.env.DATABASE_USER,
-//         password: process.env.DATABASE_PASSWORD,
-//         database: process.env.DATABASE,
-//     })
-//     .promise();
 pool.getConnection()
     .then((con) => console.log("connected to the database"))
     .catch((err) => console.log("error connecting to the database"));
