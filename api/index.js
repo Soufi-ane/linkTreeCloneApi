@@ -131,7 +131,7 @@ app.patch("/changeDetails/:userId/:field", checkUser, async (req, res, next) => 
     }
 });
 
-app.get("/isLogedIn", checkUser, async (req, res) => {
+app.get("/is/logedIn", checkUser, async (req, res) => {
     res.json({
         logedIn: true,
     });
