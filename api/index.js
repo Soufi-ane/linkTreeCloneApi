@@ -68,7 +68,10 @@ app.get("/getUserInfo/:userId", checkUser, async (req, res, next) => {
     });
     } catch (err) {
         console.log(err) 
-        res.send(err) ;
+        res.status(400).json({
+            status : "fail" , 
+            message : err.message
+        })
     }
    
 });
