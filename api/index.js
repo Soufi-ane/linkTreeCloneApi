@@ -55,8 +55,10 @@ app.get("/:username", async (req, res) => {
         },
     });
 });
-app.get("/getUserInfo/:userId", checkUser, async (req, res, next) => {
-    const { userId } = req.params;
+app.get("/getUserInfo/byId", checkUser, async (req, res, next) => {
+    const { authorization } = req.headers;
+    const encoded = await promisify(jwt.verify)(authorization, process.env.SECRET);
+    const userId = encoded.id ;
     try {
     const [pageData, links] = await getUserInfo(userId); 
          res.json({
