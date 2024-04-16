@@ -8,7 +8,9 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { checkUser } from "../authController.js";
 dotenv.config();
+import bodyParser from "body-parser";
 
+app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "*");
@@ -143,15 +145,11 @@ app.get("/is/logedIn", checkUser, async (req, res) => {
 });
 
 // app.get("/addCol/now", async (req, res) => {
-//     await addCol();
-//     res.end();
+//     const data = await addCol();
+//     res.json({
+//         data,
+//     });
 // });
-
-app.delete("/users/:ID", (req, res) => {
-    const { ID } = req.params;
-    deleteUser(ID);
-    res.send("deleted");
-});
 
 app.use((err, req, res, next) => {
     res.status(400).json({
@@ -160,7 +158,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-const port = 8000;
+const port = 3307;
 // const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`app listening on port ${port}`);
