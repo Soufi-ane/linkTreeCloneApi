@@ -58,7 +58,7 @@ app.get("/:username", async (req, res) => {
 app.get("/getUserInfo/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     try {
-    const [pageData, links] = getUserInfo(userId); 
+    const [pageData, links] = await getUserInfo(userId); 
          res.json({
         status: "success",
         data: {
