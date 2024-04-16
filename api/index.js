@@ -2,7 +2,7 @@ import express from "express";
 
 export const app = express();
 
-import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser } from "../database.js";
+import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "../database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -48,6 +48,17 @@ app.get("/:username", async (req, res) => {
     const { username } = req.params;
     const [pageData, links] = await getLinkTree(username);
     return res.json({
+        status: "success",
+        data: {
+            pageData,
+            links,
+        },
+    });
+});
+app.get("/getUserInfo/:userId", checkUser, async (req, res, next) => {
+    const { userId } = req.params;
+    const [pageData, links] = getUserInfo(userId);
+    res.json({
         status: "success",
         data: {
             pageData,
@@ -139,8 +150,11 @@ app.patch("/changeDetails/:userId/:field", checkUser, async (req, res, next) => 
 });
 
 app.get("/is/logedIn", checkUser, async (req, res) => {
+    const { authorization } = req.headers;
+    const encoded = await promisify(jwt.verify)(authorization, process.env.SECRET);
     res.json({
         logedIn: true,
+        id: encoded?.id,
     });
 });
 
