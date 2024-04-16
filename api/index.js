@@ -57,14 +57,20 @@ app.get("/:username", async (req, res) => {
 });
 app.get("/getUserInfo/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
-    const [pageData, links] = getUserInfo(userId);
-    res.json({
+    try {
+    const [pageData, links] = getUserInfo(userId); 
+         res.json({
         status: "success",
         data: {
             pageData,
             links,
         },
     });
+    } catch (err) {
+        console.log(err) 
+        res.send(err) ;
+    }
+   
 });
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
