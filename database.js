@@ -26,10 +26,14 @@ export async function findUser(ID) {
     return user;
 }
 
-export async function getUserInfo(ID) {
+export async function getUserLinks(ID) {
     const [links] = await pool.query("SELECT url , bg_color  , radius FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
+    
+    return links ;
+}
+export async function getUserPageData(ID) {
     const [[pageData]] = await pool.query("SELECT name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.id = ?", [ID]);
-    return [pageData, links];
+    return pageData ;
 }
 
 export async function getLinkTree(username) {
