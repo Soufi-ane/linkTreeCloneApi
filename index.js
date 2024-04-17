@@ -3,8 +3,8 @@ import { promisify } from "util";
 const app = express();
 import cors from "cors";
 const corsConfig = {
-    origin: "*",
-    credential: true,
+    origin: "http://localhost:5173",
+    credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
 };
 import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
@@ -14,7 +14,7 @@ import dotenv from "dotenv";
 import { checkUser } from "./authController.js";
 dotenv.config();
 import bodyParser from "body-parser";
-app.options("", cors(corsConfig));
+app.options("*", cors(corsConfig));
 app.use(cors(corsConfig));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
