@@ -14,6 +14,7 @@ import dotenv from "dotenv";
 import { checkUser } from "./authController.js";
 dotenv.config();
 import bodyParser from "body-parser";
+app.options("", cors(corsConfig));
 app.use(cors(corsConfig));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
