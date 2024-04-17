@@ -3,7 +3,7 @@ import { promisify } from "util";
 const app = express();
 import cors from "cors";
 const corsConfig = {
-    origin: "http://localhost:5173",
+    origin: "*",
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
 };
