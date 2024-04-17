@@ -29,7 +29,7 @@ export async function findUser(ID) {
 
 export async function getUserInfo(ID) {
     try {
-        const [links] = await pool.query("SELECT url , bg_color , radius FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
+        const [links] = await pool.query("SELECT url , bg_color , radius , color, text FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
         const [[pageData]] = await pool.query("SELECT name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.id = ?", [ID]);
         return [pageData, links];
     } catch (err) {
@@ -38,7 +38,7 @@ export async function getUserInfo(ID) {
 }
 
 export async function getLinkTree(username) {
-    const [links] = await pool.query("SELECT url , bg_color  , radius FROM users JOIN links ON links.user_id = users.id WHERE username = ?  ;", [username]);
+    const [links] = await pool.query("SELECT url , bg_color  , radius , color , text FROM users JOIN links ON links.user_id = users.id WHERE username = ?  ;", [username]);
     const [[pageData]] = await pool.query("SELECT name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.username = ?", [username]);
     return [pageData, links];
 }
