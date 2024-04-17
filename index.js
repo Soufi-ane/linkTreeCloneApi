@@ -1,6 +1,6 @@
 import express from "express";
 import { promisify } from "util";
-export const app = express();
+const app = express();
 import cors from "cors";
 const corsConfig = {
     origin: "*",
@@ -193,3 +193,4 @@ const port = 3307;
 app.listen(port, () => {
     console.log(`app listening on port ${port}`);
 });
+export default app;
