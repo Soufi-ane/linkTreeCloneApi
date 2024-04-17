@@ -1,4 +1,5 @@
 import express from "express";
+import { promisify } from "util";
 
 export const app = express();
 
@@ -55,16 +56,26 @@ app.get("/:username", async (req, res) => {
         },
     });
 });
-app.get("/getUserInfo/:userId", checkUser, async (req, res, next) => {
-    const { userId } = req.params;
-    const [pageData, links] = getUserInfo(userId);
-    res.json({
-        status: "success",
-        data: {
-            pageData,
-            links,
-        },
-    });
+app.get("/getUserInfo/byId", checkUser, async (req, res, next) => {
+    const { authorization } = req.headers;
+    const encoded = await promisify(jwt.verify)(authorization, process.env.SECRET);
+    const userId = encoded.id;
+    try {
+        const [pageData, links] = await getUserInfo(userId);
+        res.json({
+            status: "success",
+            data: {
+                pageData,
+                links,
+            },
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            status: "fail",
+            message: err.message,
+        });
+    }
 });
 app.post("/login", async (req, res) => {
     const { username, password } = req.body;
