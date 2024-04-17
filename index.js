@@ -1,7 +1,7 @@
 import express from "express";
 import { promisify } from "util";
 const app = express();
-import cors from "cors";
+// import cors from "cors";
 // const corsConfig = {
 //     origin: "https://soufi-ane.github.io",
 //     credentials: true,
@@ -16,7 +16,7 @@ import { checkUser } from "./authController.js";
 dotenv.config();
 import bodyParser from "body-parser";
 // app.options("*", cors(corsConfig));
-app.use(cors());
+// app.use(cors());
 app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
