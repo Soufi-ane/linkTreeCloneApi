@@ -3,7 +3,7 @@ import { promisify } from "util";
 const app = express();
 import cors from "cors";
 const corsConfig = {
-    origin: "*",
+    origin: "https://soufi-ane.github.io",
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
 };
