@@ -1,6 +1,5 @@
 import express from "express";
 import { promisify } from "util";
-
 export const app = express();
 
 import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "../database.js";
