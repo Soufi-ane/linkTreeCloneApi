@@ -25,7 +25,7 @@ app.get("/users", async (req, res) => {
     });
 });
 
-app.post("/singup", async (req, res) => {
+app.post("/signup", async (req, res) => {
     const { name, username, password, bio } = req.body;
     const salt = await bcrypt.genSalt(14);
     const hashedPass = await bcrypt.hash(password, salt);

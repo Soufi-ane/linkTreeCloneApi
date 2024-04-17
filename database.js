@@ -9,7 +9,8 @@ const pool = mysql
         port: process.env.PORT,
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE,
-        connectionLimit: 30,
+        connectionLimit: 10,
+        aitForConnections: true,
     })
     .promise();
 pool.getConnection()
@@ -27,11 +28,14 @@ export async function findUser(ID) {
 }
 
 export async function getUserInfo(ID) {
-    const [links] = await pool.query("SELECT url , bg_color , radius FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
-    const [[pageData]] = await pool.query("SELECT name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.id = ?", [ID]);
-    return [pageData , links] ;
+    try {
+        const [links] = await pool.query("SELECT url , bg_color , radius FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
+        const [[pageData]] = await pool.query("SELECT name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.id = ?", [ID]);
+        return [pageData, links];
+    } catch (err) {
+        throw new Error(err.message);
+    }
 }
-
 
 export async function getLinkTree(username) {
     const [links] = await pool.query("SELECT url , bg_color  , radius FROM users JOIN links ON links.user_id = users.id WHERE username = ?  ;", [username]);
