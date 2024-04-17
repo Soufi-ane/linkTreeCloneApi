@@ -7,6 +7,7 @@ const corsConfig = {
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
 };
+
 import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
