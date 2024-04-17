@@ -1,7 +1,7 @@
 import express from "express";
 import { promisify } from "util";
 export const app = express();
-
+import cors from "cors";
 import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 import { checkUser } from "./authController.js";
 dotenv.config();
 import bodyParser from "body-parser";
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
