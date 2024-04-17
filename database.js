@@ -10,7 +10,7 @@ const pool = mysql
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE,
         connectionLimit: 10,
-        aitForConnections: true,
+        waitForConnections: true,
     })
     .promise();
 pool.getConnection()
