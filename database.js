@@ -29,8 +29,8 @@ export async function findUser(ID) {
 
 export async function getUserInfo(ID) {
     try {
-        const [links] = await pool.query("SELECT url , bg_color , radius , color, text FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
-        const [[pageData]] = await pool.query("SELECT name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.id = ?", [ID]);
+        const [links] = await pool.query("SELECT links.id , url , bg_color , radius , color, text FROM users JOIN links ON links.user_id = users.id WHERE users.id = ?  ;", [ID]);
+        const [[pageData]] = await pool.query("SELECT users.id , name , username, background , font ,bio FROM users JOIN pages ON pages.user_id = users.id WHERE users.id = ?", [ID]);
         return [pageData, links];
     } catch (err) {
         throw new Error(err.message);
@@ -63,11 +63,19 @@ export async function createUser({ name, username, password, bio }) {
         console.log(err);
         return [new Error("Failed to create user"), null];
     }
+
+
+}
+export async function  getUserByUsername(username) {
+const [[user]] = await pool.query("SELECT COUNT(*) as USERS from users where username = ?  ; " , [username])  ;
+return user ;
 }
 
-export async function addLink({ userId, url, bg_color, radius }) {
+
+
+export async function addLink({ userId,text, url,color , bg_color, radius }) {
     try {
-        await pool.query("INSERT INTO links (user_id, url, bg_color , radius) VALUES (?,?,?,?) ; ", [userId, url, bg_color, radius]);
+        await pool.query("INSERT INTO links (user_id,text , url, color , bg_color , radius) VALUES (?,?,?,?,?,?) ; ", [userId,text , url,color , bg_color, radius]);
     } catch (err) {
         return new Error("Failed to create link");
     }
@@ -75,7 +83,7 @@ export async function addLink({ userId, url, bg_color, radius }) {
 
 export async function deleteLink({ userId, linkId }) {
     try {
-        await pool.query("DELETE FROM links WHERE id = ? AND user_id = ? ; ", [linkId, userId]);
+        await pool.query("DELETE FROM links WHERE id = ? AND user_id = ? ; ", [linkId,Number(userId)]);
     } catch {
         return new Error("Failed to delete link");
     }
@@ -92,7 +100,7 @@ export async function editPage({ userId, font, background }) {
 export async function changeUserDetails({ field, userId, value }) {
     // #MOST_UNSECURED_QUERY_HH
     try {
-        await pool.query(`UPDATE users SET ${field} = ? WHERE id = ? ; `, [value, userId]);
+        await pool.query(`UPDATE ${field == "font" || field == "background" ? "pages" : "users"} SET ${field} = ? WHERE ${field == "font" || field == "background" ? "user_id" : "id" } = ? ; `, [value, userId]);
     } catch (err) {
         console.log(err);
         return new Error("Failed to edit details");

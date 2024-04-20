@@ -8,7 +8,7 @@ const app = express();
 //     methods: ["GET", "POST", "PATCH", "DELETE"],
 // };
 
-import { getAllUsers, getUser, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
+import { getAllUsers, getUser,getUserByUsername, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -17,6 +17,7 @@ dotenv.config();
 import bodyParser from "body-parser";
 // app.options("*", cors(corsConfig));
 // app.use(cors());
+
 app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -51,6 +52,18 @@ app.post("/signup", async (req, res) => {
         });
     }
 });
+app.get("/getUsername/:username" , async (req , res , next ) => {
+const { username }  = req.params ;
+try {
+   const user  = await getUserByUsername(username) ;
+	res.json({
+	"usersWithThisUsername" : user ,
+}) ;
+}catch  (err) {
+next(err.message)
+}
+}
+)
 app.get("/:username", async (req, res) => {
     const { username } = req.params;
     const [pageData, links] = await getLinkTree(username);
@@ -110,8 +123,8 @@ app.post("/login", async (req, res) => {
 
 app.post("/addLink/:userId", checkUser, async (req, res) => {
     const { userId } = req.params;
-    const { url, bg_color, radius } = req.body;
-    const err = await addLink({ userId, url, bg_color, radius });
+    const {text , url,color , bg_color, radius } = req.body;
+    const err = await addLink({ userId,text , url,color , bg_color, radius });
     if (!err) res.status(201).end();
     else {
         res.json({
