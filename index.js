@@ -22,7 +22,12 @@ import { checkUser } from "./authController.js";
 dotenv.config();
 import bodyParser from "body-parser";
 // app.options("*", cors(corsConfig));
-// app.use(cors());
+app.options("/login", (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "POST");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.sendStatus(200);
+});// app.use(cors());
 
 app.use(bodyParser.json());
 app.get("/users", async (req, res) => {
