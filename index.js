@@ -5,6 +5,7 @@ import cors from "cors";
 const corsConfig = {
     origin: "https://soufi-ane.github.io/linkTreeClone/",
     optionsSuccessStatus: 200,
+allowedHeaders: ['Content-Type', 'Authorization'],
 };
 const app = express();
 app.use(cors(corsConfig));
