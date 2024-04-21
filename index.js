@@ -134,7 +134,7 @@ app.post("/addLink/:userId", checkUser, async (req, res) => {
     }
 });
 
-app.delete("/deleteLink/:userId", checkUser, async (req, res, next) => {
+app.post("/deleteLink/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     const { linkId } = req.body;
     const err = await deleteLink({ userId, linkId });
@@ -144,7 +144,7 @@ app.delete("/deleteLink/:userId", checkUser, async (req, res, next) => {
         return next(err);
     }
 });
-app.delete("/deleteAccount/:userId", checkUser, async (req, res, next) => {
+app.post("/deleteAccount/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     const err = await deleteUser(userId);
     if (!err) {
@@ -154,7 +154,7 @@ app.delete("/deleteAccount/:userId", checkUser, async (req, res, next) => {
     }
 });
 
-app.patch("/editPage/:userId", checkUser, async (req, res, next) => {
+app.post("/editPage/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     const { font, background } = req.body;
     const err = await editPage({ userId, font, background });
@@ -162,7 +162,7 @@ app.patch("/editPage/:userId", checkUser, async (req, res, next) => {
         res.status(201).end();
     } else return next(err);
 });
-app.patch("/changeDetails/:userId/:field", checkUser, async (req, res, next) => {
+app.post("/changeDetails/:userId/:field", checkUser, async (req, res, next) => {
     const { userId, field } = req.params;
     const { newValue } = req.body;
     let value = newValue;
