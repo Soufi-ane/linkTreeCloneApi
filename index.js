@@ -1,14 +1,19 @@
 import express from "express";
 import { promisify } from "util";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import cors from "cors";
+const corsConfig = {
+    origin: "https://soufi-ane.github.io/linkTreeClone/",
+    optionsSuccessStatus: 200,
+};
+app.use(cors(corsConfig));
 const app = express();
-// import cors from "cors";
-// const corsConfig = {
-//     origin: "https://soufi-ane.github.io",
-//     credentials: true,
-//     methods: ["GET", "POST", "PATCH", "DELETE"],
-// };
-
-import { getAllUsers, getUser,getUserByUsername, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
+const apiProxy = createProxyMiddleware({
+    target: "https://soufi-ane.github.io/linkTreeClone/",
+    changeOrigin: true,
+});
+app.use("/", apiProxy);
+import { getAllUsers, getUser, getUserByUsername, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -52,18 +57,17 @@ app.post("/signup", async (req, res) => {
         });
     }
 });
-app.get("/getUsername/:username" , async (req , res , next ) => {
-const { username }  = req.params ;
-try {
-   const user  = await getUserByUsername(username) ;
-	res.json({
-	"usersWithThisUsername" : user ,
-}) ;
-}catch  (err) {
-next(err.message)
-}
-}
-)
+app.get("/getUsername/:username", async (req, res, next) => {
+    const { username } = req.params;
+    try {
+        const user = await getUserByUsername(username);
+        res.json({
+            usersWithThisUsername: user,
+        });
+    } catch (err) {
+        next(err.message);
+    }
+});
 app.get("/:username", async (req, res) => {
     const { username } = req.params;
     const [pageData, links] = await getLinkTree(username);
@@ -123,8 +127,8 @@ app.post("/login", async (req, res) => {
 
 app.post("/addLink/:userId", checkUser, async (req, res) => {
     const { userId } = req.params;
-    const {text , url,color , bg_color, radius } = req.body;
-    const err = await addLink({ userId,text , url,color , bg_color, radius });
+    const { text, url, color, bg_color, radius } = req.body;
+    const err = await addLink({ userId, text, url, color, bg_color, radius });
     if (!err) res.status(201).end();
     else {
         res.json({
@@ -134,7 +138,7 @@ app.post("/addLink/:userId", checkUser, async (req, res) => {
     }
 });
 
-app.post("/deleteLink/:userId", checkUser, async (req, res, next) => {
+app.delete("/deleteLink/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     const { linkId } = req.body;
     const err = await deleteLink({ userId, linkId });
@@ -144,7 +148,7 @@ app.post("/deleteLink/:userId", checkUser, async (req, res, next) => {
         return next(err);
     }
 });
-app.post("/deleteAccount/:userId", checkUser, async (req, res, next) => {
+app.delete("/deleteAccount/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     const err = await deleteUser(userId);
     if (!err) {
@@ -154,7 +158,7 @@ app.post("/deleteAccount/:userId", checkUser, async (req, res, next) => {
     }
 });
 
-app.post("/editPage/:userId", checkUser, async (req, res, next) => {
+app.patch("/editPage/:userId", checkUser, async (req, res, next) => {
     const { userId } = req.params;
     const { font, background } = req.body;
     const err = await editPage({ userId, font, background });
@@ -162,7 +166,7 @@ app.post("/editPage/:userId", checkUser, async (req, res, next) => {
         res.status(201).end();
     } else return next(err);
 });
-app.post("/changeDetails/:userId/:field", checkUser, async (req, res, next) => {
+app.patch("/changeDetails/:userId/:field", checkUser, async (req, res, next) => {
     const { userId, field } = req.params;
     const { newValue } = req.body;
     let value = newValue;

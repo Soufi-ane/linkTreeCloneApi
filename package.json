@@ -19,6 +19,7 @@
         "mysql2": "^3.9.2"
     },
     "devDependencies": {
+        "http-proxy-middleware": "^3.0.0",
         "ndb": "^1.1.5"
     }
 }
