@@ -6,8 +6,8 @@ const corsConfig = {
     origin: "https://soufi-ane.github.io/linkTreeClone/",
     optionsSuccessStatus: 200,
 };
-app.use(cors(corsConfig));
 const app = express();
+app.use(cors(corsConfig));
 const apiProxy = createProxyMiddleware({
     target: "https://soufi-ane.github.io/linkTreeClone/",
     changeOrigin: true,
