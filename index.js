@@ -3,14 +3,14 @@ import { promisify } from "util";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import cors from "cors";
 const corsConfig = {
-    origin: "https://soufi-ane.github.io/linkTreeClone/",
+    origin: "https://soufi-ane.github.io",
     optionsSuccessStatus: 200,
 allowedHeaders: ['Content-Type', 'Authorization'],
 };
 const app = express();
 app.use(cors(corsConfig));
 const apiProxy = createProxyMiddleware({
-    target: "https://soufi-ane.github.io/linkTreeClone/",
+    target: "https://soufi-ane.github.io",
     changeOrigin: true,
 });
 app.use("/", apiProxy);
