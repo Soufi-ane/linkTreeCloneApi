@@ -25,12 +25,6 @@ import bodyParser from "body-parser";
 // app.use(cors());
 
 app.use(bodyParser.json());
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "*");
-    res.header("Access-Control-Allow-Headers", "*");
-    next();
-});
 app.get("/users", async (req, res) => {
     const users = await getAllUsers();
     res.json({
