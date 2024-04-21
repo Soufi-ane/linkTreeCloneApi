@@ -3,10 +3,9 @@ import { promisify } from "util";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import cors from "cors";
 const corsConfig = {
-    origin: "https://soufi-ane.github.io",
-    optionsSuccessStatus: 200,
- allowedHeaders: ['Authorization', 'Content-Type'],
-
+    origin: '*',
+    methods: ['GET', 'POST', 'DELETE' , 'PATCH'], 
+    allowedHeaders: ['Authorization', 'Content-Type'],
 };
 const app = express();
 app.use(cors(corsConfig));
