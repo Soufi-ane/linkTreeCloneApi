@@ -5,15 +5,12 @@ import cors from "cors";
 const corsConfig = {
     origin: "https://soufi-ane.github.io",
     optionsSuccessStatus: 200,
-allowedHeaders: ['Content-Type', 'Authorization'],
+ allowedHeaders: ['Authorization', 'Content-Type'],
+
 };
 const app = express();
 app.use(cors(corsConfig));
-const apiProxy = createProxyMiddleware({
-    target: "https://soufi-ane.github.io",
-    changeOrigin: true,
-});
-app.use("/", apiProxy);
+
 import { getAllUsers, getUser, getUserByUsername, createUser, getLinkTree, addLink, editPage, deleteLink, changeUserDetails, deleteUser, getUserInfo } from "./database.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -21,13 +18,8 @@ import dotenv from "dotenv";
 import { checkUser } from "./authController.js";
 dotenv.config();
 import bodyParser from "body-parser";
-// app.options("*", cors(corsConfig));
-app.options("/login", (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "POST");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.sendStatus(200);
-});// app.use(cors());
+
+
 
 app.use(bodyParser.json());
 app.get("/users", async (req, res) => {
